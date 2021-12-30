@@ -16,11 +16,19 @@
 	const path = parsedUrl.pathname;
 	const trimmedPath = path.replace(/^\/|\/+$/g, '');
 	
+	// query params
+	const queryParamsObject = parsedUrl.query;
+	
+	// get the method
+	const method = req.method.toUpperCase();
+	
 	// send the response
 	res.end('Server is here)');
 	
 	// log
-	console.log('Request recieved on path:' + trimmedPath);
+	let mes = 'Request recieved on path:' + trimmedPath + '; method ' + method;
+	mes += '; params:';
+	console.log(mes, queryParamsObject);
  });
   
  // Start the server and have it listen on port 3000
