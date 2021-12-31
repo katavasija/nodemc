@@ -6,6 +6,7 @@
  // dependencies
  const http = require('http');
  const url = require('url');
+ const config = require('./config');
  const StringDecoder = require('string_decoder').StringDecoder;
  
  // The server should respond to all requests with a string.
@@ -80,9 +81,11 @@
 	});
  });
   
- // Start the server and have it listen on port 3000
- server.listen(3000, function() {
-	console.log('The server is listening on port 3000 now.'); 
+ // Start the server and have it listen on config.port
+ server.listen(config.port, function() {
+	let mes = 'The server is listening on port ' + config.port;
+	mes += ' in ' + config.envName + ' mode.';
+	console.log(mes); 
  });
  
  // Define the handlers
@@ -101,5 +104,4 @@
  const router = {
 	sample: handlers.sample,
  };
- 
  
