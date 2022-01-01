@@ -6,8 +6,10 @@
  // dependencies
  const http = require('http');
  const url = require('url');
- const config = require('./config');
+ const config = require('./lib/config');
  const StringDecoder = require('string_decoder').StringDecoder;
+ const handlers = require('./lib/handlers');
+ const helper = require('./lib/helpers');
  
  // The server should respond to all requests with a string.
  const server = http.createServer( function(req, res) {
@@ -22,7 +24,7 @@
 	const queryParamsObject = parsedUrl.query;
 	
 	// get the method
-	const method = req.method.toUpperCase();
+	const method = req.method.toLowerCase();
 	
 	// get the headers
 	const headers = req.headers;
@@ -47,7 +49,7 @@
 			'method': method,
 			'headers': headers,
 			'queryParams': queryParamsObject,
-			'payload': buffer,
+			'payload': helper.parseJsonToObject(buffer),
 		};
 		
 		// log
@@ -73,8 +75,8 @@
 			const stringPayload = JSON.stringify(payload);
 		
 			// send the response
-			res.writeHead(statusCode);
 			res.setHeader('Content-Type', 'application/json');
+			res.writeHead(statusCode);
 			res.end(stringPayload);
 		});
 		
@@ -88,20 +90,11 @@
 	console.log(mes); 
  });
  
- // Define the handlers
- const handlers = {};
- // sample handler
- handlers.sample = function(data, callback) {
-	// callback a http status code, and a payload object
-	callback(406, {name: 'sample handler'});
- };
- // not found handler
- handlers.notFound = function(data, callback) {
-	callback(404);
+  // Define the router
+ const router = {
+	ping: handlers.ping,
+	users: handlers.users,
  };
  
- // Define the router
- const router = {
-	sample: handlers.sample,
- };
+ 
  
